@@ -16,21 +16,13 @@ class MainApp extends Component {
   constructor() {
     super();
     this.state = {
-      value: "",
-      todos: ["Nasir"]
+      value: ""
     };
   }
   componentDidMount() {
-    // this.props.getToDos();
+    this.props.getToDos();
   }
-  deleteToDo = (start)=>{
-    this.state.todos.splice(start,1);
-    this.setState({ todos : this.state.todos})
-  }
-  editTodo = (index,newValue) =>{
-    this.state.todos.splice(index,1,newValue);
-    this.setState({ todos : this.state.todos})
-  }
+
   render() {
     return (
       <View>
@@ -47,32 +39,54 @@ class MainApp extends Component {
               todo: this.state.value,
               completed: false
             };
-            this.state.todos.push(this.state.value);
-            this.setState({ todos: this.state.todos, value: "" });
+            this.props.addToDo(toDoObj);
           }}
         />
-          {this.state.todos.map((val, i) => {
-            return (
-              <Item editToDo={this.editTodo} index={i} key={i} todo={val} deleteToDo={this.deleteToDo}/>
-            );
-          })}
+        {this.props.todos !== undefined
+          ? Object.keys(this.props.todos).map((val, i) => {
+              let todo = this.props.todos[val];
+              return (
+                <Item
+                  index={val}
+                  key={val}
+                  todo={todo}
+                  deleteToDo={this.props.deleteToDo}
+                  updateToDo={this.props.updateToDo}
+                  completedToDo={this.props.completedToDo}
+                />
+              );
+            })
+          : null}
       </View>
     );
   }
 }
 
 // export default MainApp;
-// let mapStateToProps = state => {
-//   return {
-//     todos: state.todos
-//   };
-// };
-// let mapDispatchToProps = dispatch => {
-//   return {
-//     getToDos: () => {
-//       dispatch(ToDoAction.getToDo());
-//     }
-//   };
-// };
-// export default connect(mapStateToProps, mapDispatchToProps)(MainApp);
-export default MainApp;
+let mapStateToProps = state => {
+  return {
+    todos: state.toDoReducer.todos
+  };
+};
+let mapDispatchToProps = dispatch => {
+  return {
+    getToDos: () => {
+      dispatch(ToDoAction.getToDo());
+    },
+    deleteToDo: data => {
+      dispatch(ToDoAction.deleteToDo(data));
+    },
+    addToDo: data => {
+      dispatch(ToDoAction.addToDo(data));
+    },
+    updateToDo: data => {
+      dispatch(ToDoAction.updateToDo(data));
+    },
+    completedToDo: data => {
+      dispatch(ToDoAction.completedToDo(data));
+    }
+  };
+};
+export default connect(mapStateToProps, mapDispatchToProps)(MainApp);
+// export default MainApp;
+console.log("Nasir");

@@ -26,22 +26,34 @@ class Item extends Component {
             value={this.state.updatedValue}
           />
         ) : (
-          <Text>{`${this.props.todo}\n`}</Text>
+          <Text>{`${this.props.todo.todo}\n`}</Text>
         )}
-
-        <Button
-          onPress={() => {
-            this.props.deleteToDo(this.props.index);
-          }}
+        <Button onPress={()=>{
+          this.props.deleteToDo(this.props.index);
+        }}
           title="Delete!"
         />
+        <Button onPress={()=>{
+          if(this.props.todo.completed){
+          }else{
+            this.props.completedToDo(this.props.index)
+
+          }
+          // this.props.deleteToDo(this.props.index);
+        }}
+          title={!this.props.todo.completed ? 'In Completed' : 'Complete'}
+        />
         <Button
-          onPress={() => {
-            if (this.state.isEdit) {
-                this.props.editToDo(this.props.index,this.state.updatedValue);
-                this.setState({ isEdit : !this.state.isEdit})
-            } else {
-              this.setState({ isEdit: !this.state.isEdit , updatedValue : this.props.todo});
+          onPress={()=>{
+            if(this.state.isEdit){
+              let forPayload = {
+                key : this.props.index,
+                val : this.state.updatedValue
+              }
+              this.props.updateToDo(forPayload)
+              this.setState({ isEdit : !this.state.isEdit , updatedValue : ''})
+            }else{
+              this.setState({ updatedValue : this.props.todo.todo , isEdit : !this.state.isEdit})
             }
           }}
           title={this.state.isEdit ? "Update" : "Edit"}

@@ -15,6 +15,7 @@ var config = {
 firebase.initializeApp(config);
   
 let ref = firebase.database().ref('/todo');
+// ref.push({Name : 'Nasir is'})
 // ref.push({name:'yasir'});
 
 export default class ToDoEpic {
@@ -31,7 +32,7 @@ export default class ToDoEpic {
     static deleteToDo = (action$)=>{
         return action$.ofType(ToDoAction.DELETE_TODO)
             .switchMap(({ payload })=>{
-                return Observable.fromPromise(ref.child(payload.key).set(null))
+                return Observable.fromPromise(ref.child(payload).set(null))
                 .map((x)=>{
                     return { type : ToDoAction.NULL}
                 })
@@ -42,7 +43,7 @@ export default class ToDoEpic {
         return action$.ofType(ToDoAction.COMPLETED_TODO)
         .switchMap(({payload })=>{
             console.log(payload)
-            return Observable.fromPromise(ref.child(`${payload}/isCompleted`).set(true))
+            return Observable.fromPromise(ref.child(`${payload}/completed`).set(true))
             .map((x)=>{
                 return { type : ToDoAction.NULL}
             })
